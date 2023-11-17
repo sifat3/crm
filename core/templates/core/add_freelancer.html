@@ -1,0 +1,42 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <br>
+    <h3>Add Freelancer</h3>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">E-mail</label>
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Phone</label>
+            <input type="text" name="phone" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">linkedin</label>
+            <input type="url" name="linkedin" class="form-control" id="exampleInputEmail1"aria-describedby="emailHelp" required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Skills</label>
+            <input type="text" name="skill" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <br>
+    <h3>Add Payment | Cost</h3>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">INVOICE</label>
+            <input type="text" name="invoice" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Payment Type</label>
+            <select class="form-select"  name="payment" id="">
+                <option value="payment1">First Payment</option>
+                <option value="payment2">Second Payment</option>
+                <option value="payment3">Third Payment</option>
+                <option value="cost">Cost</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Amount (BDT)</label>
+            <input type="number" name="amount" class="form-control" id="exampleInputPassword1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

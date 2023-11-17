@@ -1,0 +1,68 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<br>
+<h3>Hello @{{user.username}}</h3>
+<a class="btn btn-outline-primary" aria-current="page" href="{% url 'logout' %}"> LOGOUT</a>
+<hr>
+{% if user.is_superuser %}
+
+<div class="container">
+    <h3>Profit in last 30 days: {{profit}} BDT</h3>
+    <ul>
+        <li><a class="btn btn-outline-primary" href="{% url 'add_client'%}"><h4>Add New Client</h4></a></li>
+        <li><a class="btn btn-outline-primary" href="{% url 'add_freelancer' %}"><h4>Add Freelancer</h4></a><a class="btn btn-outline-primary" href="{% url 'show_freelancers' %}"><h4>Show Freelancers</h4></a></li>
+        <li><a class="btn btn-outline-primary" href="{% url 'add_project' %}"><h4>Add Project</h4></a></li>
+        <li><a class="btn btn-outline-primary" href="{% url 'completed_projects' %}"><h4>Completed Projects</h4></a></li>
+        <li><a class="btn btn-outline-primary" href="{% url 'payment' %}"><h4>Add Payment | Cost</h4></a></li>
+    </ul>
+</div><hr>
+<div class="container">
+    <h3>Ongoing Projects</h3>
+    <ul>
+        {% for project in projects %}
+            <hr><li>Invoice: {{project.invoice}} | Client: {{project.client}} - {{project.client.email}} | Bill: {{project.bill}} | Cost: {{project.cost}} | Net Profit: {{project.profit}} | 
+                Delivery Date: {{project.estimated_delivery_date}} <br> Peoples: {% for freelancer in project.freelancers.all %} {{freelancer}} {% endfor%} <br> First Payment: {{project.first_payment}} | Second Payment: {{project.second_payment}} | Third Payment: {{project.third_payment}} | Amount Due: {{project.due_amount}} <br>
+                <a class="btn btn-outline-success" href="{%url 'completed' project.invoice %}">Mark As Completed</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div><hr>
+{% endif %}
+<br>
+<div class="container">
+    <h3>PENDING TOKENS</h3>
+    <ul>
+    {% for token in tokens %}
+        
+        <li>
+            <hr><h4>INVOICE: {{token.invoice}} | ISSUE: {{token.problem}} | STATUS: {% if token.solved == True%} SOLVED {% else %} In QUEUE {% endif %} | DATE:
+                {{token.date}} | <a class="btn btn-outline-primary" href="{%url 'solved' token.invoice %}">Mark As Solved</a></h4>
+        </li>
+    {% endfor %}
+    </ul><br><br>
+</div>
+
+{% else %}
+<div class="container">
+    <br>
+    <h3>Login</h3>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endif %}
+
+{% endblock content %}

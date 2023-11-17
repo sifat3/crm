@@ -1,0 +1,31 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+<br>
+{% if pg == 0 %}
+    <div class="container">
+        <h3>STATUS of your request.</h3>
+        <p>Please give your order REFFERENCE NUMBER or INVOICE ID to check status of your requested issue.</p>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="exampleInputPassword1" class="form-label">Invoice ID/Refference Number*</label>
+                <input type="text" class="form-control" name="invoice" aria-describedby="emailHelp" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+{% else %}
+    <ul>
+    {% for token in tokens %}
+        
+        <div class="container">
+            <h3>INVOICE: {{token.invoice}}</h3>
+            <li><h4>ISSUE: {{token.issue}} | STATUS: {% if token.solved == True%} SOLVED {% else %} In QUEUE {% endif %} | DATE: {{token.date}}</h4></li>
+        </div>
+        
+    
+    {% endfor %}
+    </ul>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<br>
+<div class="container">
+    <h3>Completed Projects | All time total Profit: BDT {{profit}}</h3>
+    <ul>
+        {% for project in projects %}
+        <hr>
+        <li>Invoice: {{project.invoice}} | Client: {{project.client}} | Bill: {{project.bill}} | Cost: {{project.cost}}
+            | Net Profit: {{project.profit}} |
+            Delivery Date: {{project.delivery_date}} <br> Peoples Email: {{project.freelancer_email}}<br>
+            Peoples LinkedIn: {{project.freelancer_linkedIn}}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+<hr>
+{% endif %}
+
+{% endblock content %}

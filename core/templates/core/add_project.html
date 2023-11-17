@@ -1,0 +1,43 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+
+<div class="container">
+    <br>
+    <h3>Add project</h3>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Invoice</label>
+            <input type="text" name="invoice" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputPassword1" class="form-label">Client</label>
+            <select class="form-select" name="client" id="">
+                <option selected>Select a Client</option>
+                {% for client in clients %}
+                    <option value="{{client.id}}">{{client.name}} - {{client.email}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Bill</label>
+            <input type="number" name="bill" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <div class="mb-3">
+            <label for="exampleInputEmail1" class="form-label">Delivery Date</label>
+            <input type="date" name="estimated_delivery_date" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endif %}
+
+{% endblock %}

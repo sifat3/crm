@@ -1,0 +1,41 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+{% if user.is_authenticated %}
+<br>
+<div class="container">
+    <form class="d-flex" role="search">
+        <input class="form-control me-2" type="text" name="q" placeholder="Search by name or skills" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+</div><br>
+<div class="container">
+    <ul>
+        {% for freelancer in freelancers %}
+        
+        <li><h4>Name: {{freelancer.name}}</h4>| E-mail: {{freelancer.email}} | LinkedIn: {{freelancer.linkedin}} | Phone: {{freelancer.phone}} <br>
+            Total Earned: {{freelancer.total_earned}} |
+            Project currently working on : {{freelancer.project}} <br>
+            Skills: {{freelancer.skill}} <br>
+            Due Amount: {{freelancer.due_amount}} | <a href="{% url 'pay_freelancer' freelancer.id %}" class="btn btn-outline-primary">Mark As Paid</a><br>
+            <form method="POST">
+                {% csrf_token %}
+                <Label><h5>Choose Project to assign:</h5></Label>
+                <select name="project" id="">
+                    <option selected>Select Project</option>
+                    {% for project in projects %}
+                    <option value="{{project.id}}">{{project.invoice}}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="amount" placeholder="Earning:">
+                <input type="hidden" name="freelancer" value="{{freelancer.id}}">
+                <input class="btn btn-outline-primary" type="submit">
+            </form>
+        </li><hr>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+{% endblock content %}
