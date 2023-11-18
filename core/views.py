@@ -16,18 +16,41 @@ def home(request):
         email = request.POST['email']
         invoice = (request.POST['invoice'].strip()).lower()
         problem = request.POST['problem']
-        date =  datetime.now().strftime("%m/%d/%Y")
+        # date =  datetime.now().strftime("%m/%d/%Y")
         if Completed_Project.objects.filter(invoice=invoice):
             project = Completed_Project.objects.get(invoice=invoice)
-            if int(project.warranty.year) >= int(datetime.now().strftime("%Y")) and int(project.warranty.month) >= int(datetime.now().strftime("%m")) and int(project.warranty.day) >= int(datetime.now().strftime("%d")):
+            if int(project.warranty.year) > int(datetime.now().strftime("%Y")):
                 token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
                 token.save()
                 messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
                 mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
                 mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
-        
+
+            elif int(project.warranty.year) == int(datetime.now().strftime("%Y")):
+                if int(project.warranty.month) > int(datetime.now().strftime("%m")):
+                    token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
+                    token.save()
+                    messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
+                    mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
+                    mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
+                elif int(project.warranty.month) == int(datetime.now().strftime("%m")):
+                    if int(project.warranty.day) > int(datetime.now().strftime("%d")):
+                        token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
+                        token.save()
+                        messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
+                        mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
+                        mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
+                    
+                    else:
+                        messages.success(request, "Sorry, Your warranty period is over, Please contact info@ibizn.com")
+
+                else:
+                    messages.success(request, "Sorry, Your warranty period is over, Please contact info@ibizn.com")
+
             else:
                 messages.success(request, "Sorry, Your warranty period is over, Please contact info@ibizn.com")
+                
+
         else:
             messages.success(request, "Invalid invoice id")
         
