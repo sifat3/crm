@@ -23,7 +23,7 @@ def home(request):
                 token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
                 token.save()
                 messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
-                mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
+                mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}, Project URL: {project.url}", ['info@ibizn.com'])
                 mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
 
             elif int(project.warranty.year) == int(datetime.now().strftime("%Y")):
@@ -31,14 +31,14 @@ def home(request):
                     token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
                     token.save()
                     messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
-                    mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
+                    mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}, Project URL: {project.url}", ['info@ibizn.com'])
                     mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
                 elif int(project.warranty.month) == int(datetime.now().strftime("%m")):
                     if int(project.warranty.day) > int(datetime.now().strftime("%d")):
                         token = Token.objects.create(name=name, email=email, invoice=invoice, problem=problem)
                         token.save()
                         messages.success(request, "We have recieved your message. We will fix the issue as soon as possible. You can see the status of your request on the STATUS section.")
-                        mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}", ['info@ibizn.com'])
+                        mail("NEW TOKEN ADDED", f"INVOICE: {invoice}, \n ISSUE: {problem}. Freelancers: {[project.freelancer_linkedIn]}, Project URL: {project.url}, Services: {project.services}", ['info@ibizn.com'])
                         mail("REQUEST RECIEVED", f"We have recieved your request.\nAnd currently working on.\nThanks for your patience.\nIBIZN", [email])
                     
                     else:
@@ -125,9 +125,9 @@ def completed(request, pk):
     project = Ongoing_project.objects.get(invoice=pk)
     if project.due_amount <= 0:
         freelancers = project.freelancers.all()
-        url = [i.linkedin for i in freelancers]
+        f_url = [i.linkedin for i in freelancers]
         email = [i.email for i in freelancers]
-        complete_project = Completed_Project.objects.create(invoice=project.invoice, client=project.client, bill=project.bill, cost=project.cost, profit=project.profit, delivery_date=datetime.now(), warranty=datetime.now()+relativedelta(months=6), freelancer_linkedIn=url, freelancer_email=email)
+        complete_project = Completed_Project.objects.create(invoice=project.invoice, services=project.services , client=project.client, bill=project.bill, cost=project.cost, profit=project.profit, delivery_date=datetime.now(), warranty=datetime.now()+relativedelta(months=6), freelancer_linkedIn=f_url, freelancer_email=email, url=project.url)
         complete_project.save()
         project.delete()
     else:
@@ -173,11 +173,18 @@ def add_project(request):
         invoice = (request.POST['invoice'].strip()).lower()
         client_id = request.POST['client']
         client = Client.objects.get(id=client_id)
+        services = request.POST['services']
         bill = request.POST['bill']
+        url = request.POST['url']
         delivery_date = request.POST['estimated_delivery_date']
-        new_project = Ongoing_project.objects.create(invoice=invoice, client=client, bill=bill, cost=0, profit=bill, estimated_delivery_date=delivery_date, due_amount=bill)
-        new_project.save()
-        return redirect('backend')
+        if Ongoing_project.objects.filter(invoice=invoice):
+            messages.success(request, "INVOICE EXISTS!")
+            return redirect('backend')
+        else:
+            new_project = Ongoing_project.objects.create(invoice=invoice, client=client, bill=bill, cost=0, profit=bill, estimated_delivery_date=delivery_date, due_amount=bill, url=url, services=services)
+            new_project.save()
+            messages.success(request, "Project Created!")
+            return redirect('backend')
 
     return render(request, 'core/add_project.html', {'clients': clients})
 

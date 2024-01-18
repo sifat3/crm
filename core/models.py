@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Client(models.Model):
 
     name = models.CharField(max_length=200, blank=False, null=False)
@@ -11,6 +12,7 @@ class Client(models.Model):
 class Completed_Project(models.Model):
     invoice = models.CharField(max_length=100, blank=False, null=False)
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=False, null=True)
+    services = models.TextField(default='null')
     bill = models.IntegerField(blank=False, null=False)
     cost = models.IntegerField(blank=False, null=False)
     profit = models.IntegerField(blank=False, null=False)
@@ -19,6 +21,7 @@ class Completed_Project(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     freelancer_linkedIn = models.URLField(default="sifat.com")
     freelancer_email = models.EmailField(default='nothing@nothing.com')
+    url = models.TextField(default='null', blank=True, null=True)
     def __str__(self) -> str:
         return self.invoice
     
@@ -29,6 +32,7 @@ class Completed_Project(models.Model):
 class Ongoing_project(models.Model):
     invoice = models.CharField(max_length=100, blank=False, null=False)
     client = models.ForeignKey(Client, on_delete=models.SET_NULL, blank=False, null=True)
+    services = models.TextField(default='null')
     bill = models.IntegerField(default=0, blank=False, null=False)
     cost = models.IntegerField(default=0, blank=False, null=False)
     profit = models.IntegerField(default=0, blank=False, null=False)
@@ -37,6 +41,7 @@ class Ongoing_project(models.Model):
     second_payment = models.IntegerField(default=0, blank=False, null=False)
     third_payment = models.IntegerField(default=0, blank=False, null=False)
     due_amount = models.IntegerField(default=0, blank=False, null=False)
+    url = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
